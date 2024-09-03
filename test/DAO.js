@@ -7,7 +7,7 @@ const tokens = (n) => {
 
 const ether = tokens
 
-describe('Token', () => {
+describe('DAO', () => {
   let token, accounts, DAO
 
   beforeEach(async () => {
@@ -19,11 +19,16 @@ describe('Token', () => {
 
     accounts = await ethers.getSigners()
     deployer = accounts[0]
+    funder = accounts[1]
+
+    await funder.sendTransaction({ to: DAO.address, value: ether(100) })
     
   })
 
   describe('Deployment', () => {
-   
+    it('sends Ether to the DAO treasury', async () => {
+      expect(await ethers.provider.getBalance(DAO.address)).to.equal(ether(100))
+    })
 
     it('returns token address', async () => {
       expect(await DAO.token()).to.equal(token.address)
